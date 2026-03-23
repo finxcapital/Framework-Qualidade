@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily de Qualidade — FINX Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --finx-yellow:     #FCD02B;
+    --finx-dark:       #142141;
+    --finx-teal:       #1B82B0;
+    --finx-dark-teal:  #115978;
+    --finx-bright:     #0065FF;
+    --finx-med:        #014EDC;
+
+    --bg:              var(--finx-dark);
+    --surface:         rgba(255, 255, 255, 0.05);
+    --surface-hover:   rgba(255, 255, 255, 0.08);
+    --border:          rgba(255, 255, 255, 0.1);
+    --border-hi:       rgba(255, 255, 255, 0.25);
+    --text:            #ffffff;
+    --muted:           rgba(255, 255, 255, 0.6);
+    --accent:          var(--finx-bright);
+    --accent-dim:      rgba(0, 101, 255, 0.15);
+    --accent-yellow:   var(--finx-yellow);
+    
+    --green:           #22c55e;
+    --green-dim:       rgba(34, 197, 94, 0.15);
+    --amber:           #f59e0b;
+    --amber-dim:       rgba(245, 158, 11, 0.15);
+    --red:             #ef4444;
+    --red-dim:         rgba(239, 68, 68, 0.15);
+    
+    --sans:            'Inter', sans-serif;
+    --radius:          16px;
+    --radius-sm:       10px;
+  }
+  
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body { 
+    background-color: var(--bg); color: var(--text); font-family: var(--sans); 
+    font-size: 14px; line-height: 1.6; min-height: 100vh; position: relative; overflow-x: hidden;
+  }
+
+  body::before, body::after {
+    content: ''; position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; opacity: 0.6;
+  }
+  body::before { top: -10%; left: -10%; width: 500px; height: 500px; background: rgba(0, 101, 255, 0.3); }
+  body::after { bottom: -10%; right: -10%; width: 600px; height: 600px; background: rgba(27, 130, 176, 0.2); }
+
+  .shell { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 50px 20px 80px; }
+
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-in { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+  .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } 
+  .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+
+  .header { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid var(--border); }
+  .header-logo { height: 45px; margin-bottom: 24px; object-fit: contain; }
+  .header-tag { font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--accent-yellow); margin-bottom: 8px; }
+  .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -.02em; color: #fff; }
+  .header-sub { font-size: 13px; color: var(--muted); margin-top: 6px; font-weight: 400; }
+  
+  .meta-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; position: relative; z-index: 20; }
+  .meta-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; align-items: start; position: relative; z-index: 10; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media(max-width:650px){ .meta-row, .meta-row-2, .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .section { 
+    background: var(--surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 24px; overflow: hidden; 
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  }
+  .section:focus-within, .section:hover { border-color: var(--border-hi); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+  .section-num { font-size: 11px; font-weight: 700; color: var(--finx-dark); background: var(--accent-yellow); border-radius: 6px; padding: 3px 8px; flex-shrink: 0; }
+  .section-title { font-size: 14px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: #fff; }
+  .section-badge { margin-left: auto; font-size: 11px; font-weight: 500; color: var(--muted); background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; }
+  .section-body { padding: 20px; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  
+  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+  
+  .field input, .field textarea { 
+    background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: var(--radius-sm); 
+    color: #fff; font-family: var(--sans); font-size: 14px; padding: 10px 14px; outline: none; transition: all .2s; width: 100%; box-sizing: border-box;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); background: rgba(0, 101, 255, 0.05); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); opacity: .5; }
+  .field textarea { resize: none; min-height: 42px; overflow: hidden; }
+  .field.mono input { font-variant-numeric: tabular-nums; font-family: monospace; }
+  .field input[type="date"] { color-scheme: dark; cursor: pointer; }
+
+  .custom-select { position: relative; user-select: none; }
+  .select-selected { 
+    background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: var(--radius-sm); 
+    padding: 10px 30px 10px 14px; cursor: pointer; color: #fff; transition: all .2s; font-size: 14px; 
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; display: block;
+  }
+  .select-selected:after { 
+    content: ''; border: solid var(--muted); border-width: 0 2px 2px 0; display: inline-block; padding: 3px; 
+    transform: translateY(-50%) rotate(45deg); transition: transform 0.2s, border-color 0.2s; position: absolute; right: 14px; top: 45%; 
+  }
+  .select-selected.select-arrow-active { border-color: var(--accent); background: rgba(0, 101, 255, 0.05); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .select-selected.select-arrow-active:after { transform: translateY(-30%) rotate(-135deg); border-color: var(--accent); }
+  
+  .select-items { 
+    position: absolute; background: rgba(20, 33, 65, 0.85); 
+    backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); 
+    border: 1px solid var(--border-hi); box-shadow: 0 8px 32px rgba(0,0,0,0.6); border-radius: var(--radius-sm); 
+    top: 100%; left: 0; right: 0; z-index: 9999; margin-top: 8px; overflow: hidden; opacity: 0; 
+    transform: translateY(-10px); pointer-events: none; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+  }
+  .select-items.select-show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .select-items div { padding: 12px 14px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff; transition: all .2s; font-size: 14px; position: relative; }
+  .select-items div:last-child { border-bottom: none; }
+  .select-items div:hover { background: rgba(0, 101, 255, 0.2); color: var(--finx-bright); padding-left: 18px; }
+
+  .select-items div.multi-selected { background: rgba(0, 101, 255, 0.15); color: var(--finx-yellow); font-weight: 600; }
+  .select-items div.multi-selected::after { content: '✔'; position: absolute; right: 14px; color: var(--finx-yellow); }
+
+  .subgroup { background: rgba(0,0,0,.15); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 6px; }
+  .subgroup-title { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .subgroup-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .check-group { display: flex; flex-direction: column; gap: 10px; }
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; user-select: none; box-sizing: border-box; background: rgba(255,255,255,0.02); }
+  .check-item:hover { border-color: var(--border-hi); background: var(--surface-hover); }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-box { width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; border: 2px solid var(--muted); background: transparent; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .check-box svg { display: none; }
+  .check-item input[type="checkbox"]:checked ~ .check-box { background: var(--accent); border-color: var(--accent); }
+  .check-item input[type="checkbox"]:checked ~ .check-box svg { display: block; stroke-width: 3; }
+  .check-label { font-size: 14px; color: var(--text); transition: color .2s; font-weight: 500; }
+  .check-item input[type="checkbox"]:checked ~ .check-label { color: #fff; }
+
+  .exp-wrap { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; transition: all .2s; background: rgba(0,0,0,0.1); }
+  .exp-wrap.active { border-color: var(--accent); background: rgba(0, 101, 255, 0.05); }
+  .exp-header { display: flex; align-items: center; gap: 14px; padding: 14px 18px; cursor: pointer; transition: background .2s; user-select: none; }
+  .exp-header:hover { background: rgba(255,255,255,.04); }
+  .exp-checkbox { display: none; }
+  .exp-check-box { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; border: 2px solid var(--muted); background: transparent; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .exp-check-box svg { display: none; }
+  .exp-checkbox:checked ~ .exp-check-box { background: var(--accent); border-color: var(--accent); }
+  .exp-checkbox:checked ~ .exp-check-box svg { display: block; stroke-width: 3; }
+  .exp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .exp-name { font-size: 15px; font-weight: 600; }
+  .exp-hint { margin-left: auto; font-size: 12px; color: var(--muted); }
+  
+  .exp-fields { display: none; padding: 16px 18px; border-top: 1px solid var(--border); gap: 16px; background: rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease; align-items: start; }
+  .exp-fields.open { display: grid; }
+  .exp-fields.col-3 { grid-template-columns: repeat(3, 1fr); }
+  .exp-fields.col-2 { grid-template-columns: 1fr 1fr; }
+  @media(max-width:650px){ .exp-fields.col-3, .exp-fields.col-2 { grid-template-columns: 1fr; } }
+
+  .farol-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: stretch; }
+  .farol-grid > div { display: flex; }
+  @media(max-width:650px){ .farol-grid { grid-template-columns: 1fr; } }
+  .farol-option { display: none; }
+  .farol-label { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; padding: 20px 14px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); text-align: center; background: rgba(0,0,0,0.2); box-sizing: border-box; }
+  .farol-label:hover { border-color: var(--border-hi); transform: translateY(-3px); background: var(--surface-hover); }
+  .farol-circle { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; transition: all 0.3s; margin-bottom: 4px; }
+  .farol-option[value="verde"]:checked    + .farol-label { border-color: var(--green); background: var(--green-dim); }
+  .farol-option[value="amarelo"]:checked  + .farol-label { border-color: var(--amber); background: var(--amber-dim); }
+  .farol-option[value="vermelho"]:checked + .farol-label { border-color: var(--red);   background: var(--red-dim); }
+  .farol-option[value="verde"]:checked    + .farol-label .farol-circle { box-shadow: 0 0 20px rgba(34,197,94,.6); transform: scale(1.1); }
+  .farol-option[value="amarelo"]:checked  + .farol-label .farol-circle { box-shadow: 0 0 20px rgba(245,158,11,.6); transform: scale(1.1); }
+  .farol-option[value="vermelho"]:checked + .farol-label .farol-circle { box-shadow: 0 0 20px rgba(239,68,68,.6); transform: scale(1.1); }
+  .farol-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;}
+  .farol-desc { font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 400; }
+
+  .progress-bar-wrap { background: rgba(255,255,255,0.1); border-radius: 99px; height: 6px; overflow: hidden; margin: 24px 0 8px; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--finx-bright), var(--finx-yellow)); border-radius: 99px; transition: width .5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .progress-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 32px; text-align: right; }
+  
+  .submit-wrap { display: flex; gap: 16px; justify-content: flex-end; margin-top: 40px; }
+  .btn-reset { padding: 12px 24px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); color: #fff; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; backdrop-filter: blur(5px); }
+  .btn-reset:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.1); }
+  .btn-submit { padding: 12px 32px; border: none; border-radius: var(--radius-sm); background: var(--accent); color: #fff; font-family: var(--sans); font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px var(--accent-dim); }
+  .btn-submit:hover { background: var(--finx-med); box-shadow: 0 6px 20px rgba(0, 101, 255, 0.3); transform: translateY(-2px); }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+  
+  .toast { position: fixed; bottom: 32px; right: 32px; border-radius: 12px; padding: 16px 24px; font-size: 14px; font-weight: 600; opacity: 0; transform: translateY(16px); transition: all .4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; z-index: 999; max-width: 340px; border: 1px solid; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="header animate-in">
+    <img src="https://github.com/user-attachments/assets/41e98109-418f-40d4-9c27-75a357726e0b" alt="FINX" class="header-logo">
+    <div class="header-tag">Daily de Qualidade</div>
+    <h1>Framework do Monitor</h1>
+    <div class="header-sub">Duração: 10-15 min &nbsp;·&nbsp; Foco: Análise, rastreamento e viabilidade</div>
+  </div>
+
+  <div class="progress-bar-wrap animate-in"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+  <div class="progress-label animate-in"><span id="progressPct">0%</span> preenchido</div>
+
+  <form id="dailyForm" novalidate>
+    <div class="meta-row animate-in delay-1">
+      <div class="field"><label>Data</label><input type="date" id="data" name="data" class="track-single" required></div>
+      
+      <div class="field">
+        <label>Monitor</label>
+        <div class="custom-select" id="selectMonitor">
+          <div class="select-selected" id="displayMonitor">Selecione...</div>
+          <div class="select-items">
+            <div data-value="Alexandre Gomes da Silva" data-email="alexandre.silva@finxcapital.com.br">Alexandre Gomes da Silva</div>
+            <div data-value="Lilian Barbosa Bicudo Martins" data-email="lilian.martins@finxcapital.com.br">Lilian Barbosa Bicudo Martins</div>
+            <div data-value="Lucca Haiger Moraes" data-email="lucca.moraes@finxcapital.com.br">Lucca Haiger Moraes</div>
+          </div>
+          <input type="hidden" name="monitor" id="inputMonitor" class="track-single" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>E-mail do monitor</label>
+        <input type="email" name="emailMonitor" id="inputEmailMonitor" class="track-single" placeholder="Preenchido automaticamente..." readonly style="color:var(--finx-yellow)">
+      </div>
+    </div>
+    
+    <div class="meta-row-2 animate-in delay-1">
+      <div class="field">
+        <label>Equipe</label>
+        <div class="custom-select" id="selectEquipe">
+          <div class="select-selected" id="displayEquipe">Selecione...</div>
+          <div class="select-items">
+            <div data-value="Movida">Movida</div>
+            <div data-value="Condicional">Condicional</div>
+            <div data-value="Localiza">Localiza</div>
+          </div>
+          <input type="hidden" name="equipe" id="inputEquipe" class="track-single" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>E-mail Alternativo (Opcional)</label>
+        <label class="check-item" style="margin: 0; height: 44px;">
+          <input type="checkbox" id="chkOutroGerente">
+          <div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div>
+          <span class="check-label" style="font-size: 13px;">Enviar para outro coordenador?</span>
+        </label>
+        <input type="email" id="inputEmailGerente" name="emailGerente" placeholder="Digite o novo e-mail" style="display: none; margin-top: 8px;">
+      </div>
+    </div>
+
+    <div class="section animate-in delay-2">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">Indicadores do Dia</span>
+        <span class="section-badge">Qualidade</span>
+      </div>
+      <div class="section-body">
+        <div class="subgroup">
+          <div class="subgroup-title">1.1 Entregas de Monitoria</div>
+          <div class="grid-2">
+            <div class="field mono"><label>Meta Monitoria Dia</label><input type="number" name="metaMonitoriaDia" class="track-single" placeholder="Ex: 20" min="0"></div>
+            <div class="field mono"><label>Monitorias Feitas Dia</label><input type="number" name="feitasMonitoriaDia" class="track-single" placeholder="Ex: 18" min="0"></div>
+          </div>
+        </div>
+        
+        <div class="subgroup" style="margin-top:16px">
+          <div class="subgroup-title">1.2 Auditorias (Marque as realizadas)</div>
+          <div id="auditoriasContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section animate-in delay-3">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Diagnóstico</span>
+        <span class="section-badge">Foco da Operação</span>
+      </div>
+      <div class="section-body">
+        <div class="subgroup">
+          <div class="subgroup-title">Qualitativo — Como a equipe está operando</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="diagQualScript" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Aderência ao Script/Processo</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQualVendas" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Técnica de Vendas/Argumentação</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQualRegistros" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Qualidade dos Registros (CRM)</span></label>
+          </div>
+        </div>
+        <div class="subgroup" style="margin-top:16px">
+          <div class="subgroup-title">Quantitativo — Esforço e Eficiência da Qualidade</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="diagQuantVolume" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Volume de Amostras Analisadas</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQuantTempo" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Tempo de Análise por Ligação</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQuantGargalos" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Gargalos de Fila/Sistema</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section animate-in delay-3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">Plano de Ação</span>
+        <span class="section-badge">Marque para descrever</span>
+      </div>
+      <div class="section-body" id="planosContainer"></div>
+    </div>
+
+    <div class="section animate-in delay-4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <span class="section-title">Farol de Confiança</span>
+        <span class="section-badge">Viabilidade das metas do setor</span>
+      </div>
+      <div class="section-body">
+        <div class="farol-grid">
+          <div><input class="farol-option" type="radio" name="farol" id="farolVermelho" value="vermelho"><label class="farol-label" for="farolVermelho"><div class="farol-circle" style="background:var(--red)"></div><div class="farol-name" style="color:var(--red)">Vermelho</div><div class="farol-desc">Impossível - sem chances tangíveis de bater a meta.</div></label></div>
+          <div><input class="farol-option" type="radio" name="farol" id="farolAmarelo" value="amarelo"><label class="farol-label" for="farolAmarelo"><div class="farol-circle" style="background:var(--amber)"></div><div class="farol-name" style="color:var(--amber)">Amarelo</div><div class="farol-desc">Possível - há caminho, mas cenário é incerto.</div></label></div>
+          <div><input class="farol-option" type="radio" name="farol" id="farolVerde" value="verde"><label class="farol-label" for="farolVerde"><div class="farol-circle" style="background:var(--green)"></div><div class="farol-name" style="color:var(--green)">Verde</div><div class="farol-desc">Provável - superaremos a meta operacional.</div></label></div>
+        </div>
+        <div class="field" style="margin-top:20px"><label>Observação sobre o farol (opcional)</label><textarea name="farolObs" placeholder="Contexto, riscos ou pontos de atenção..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="submit-wrap animate-in delay-4">
+      <button type="button" class="btn-reset" onclick="resetForm()">Limpar formulário</button>
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        Enviar Daily
+      </button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+function setupCustomSelect(containerId, inputId, onSelectCallback) {
+  const container = document.getElementById(containerId);
+  const selected = container.querySelector('.select-selected');
+  const items = container.querySelector('.select-items');
+  const hiddenInput = document.getElementById(inputId);
+
+  selected.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeAllSelect(this);
+    items.classList.toggle('select-show');
+    this.classList.toggle('select-arrow-active');
+  });
+
+  const options = items.querySelectorAll('div');
+  options.forEach(opt => {
+    opt.addEventListener('click', function(e) {
+      selected.innerHTML = this.innerHTML;
+      hiddenInput.value = this.dataset.value;
+      hiddenInput.dispatchEvent(new Event('input'));
+      if (onSelectCallback) onSelectCallback(this);
+      selected.click();
+    });
+  });
+}
+
+function setupMultiSelect(containerId, inputId) {
+  const container = document.getElementById(containerId);
+  const selected = container.querySelector('.select-selected');
+  const items = container.querySelector('.select-items');
+  const hiddenInput = document.getElementById(inputId);
+  const options = items.querySelectorAll('div');
+
+  selected.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeAllSelect(this);
+    items.classList.toggle('select-show');
+    this.classList.toggle('select-arrow-active');
+  });
+
+  options.forEach(opt => {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation(); 
+      this.classList.toggle('multi-selected');
+      const selectedDivs = items.querySelectorAll('div.multi-selected');
+      const vals = []; const texts = [];
+      selectedDivs.forEach(d => { vals.push(d.dataset.value); texts.push(d.innerText); });
+      if (vals.length === 0) {
+        selected.innerText = 'Selecione...'; hiddenInput.value = '';
+      } else {
+        selected.innerText = texts.join(', '); hiddenInput.value = vals.join(', ');
+      }
+      hiddenInput.dispatchEvent(new Event('input'));
+    });
+  });
+}
+
+function closeAllSelect(elmnt) {
+  const items = document.querySelectorAll('.select-items');
+  const selecteds = document.querySelectorAll('.select-selected');
+  selecteds.forEach(s => { if (s !== elmnt) s.classList.remove('select-arrow-active'); });
+  items.forEach(i => { if (elmnt !== i.previousElementSibling) i.classList.remove('select-show'); });
+}
+
+document.addEventListener("click", function(e) {
+  if (!e.target.closest('.custom-select')) closeAllSelect(null);
+});
+
+setupCustomSelect('selectMonitor', 'inputMonitor', (selectedOpt) => {
+  const emailField = document.getElementById('inputEmailMonitor');
+  emailField.value = selectedOpt.dataset.email;
+  emailField.dispatchEvent(new Event('input'));
+});
+setupMultiSelect('selectEquipe', 'inputEquipe');
+
+
+document.addEventListener('input', function (event) {
+  if (event.target.tagName.toLowerCase() !== 'textarea') return;
+  autoResize(event.target);
+}, false);
+function autoResize(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+const AUDITORIAS = [
+  { key:'audRotina',     label:'Auditoria de Rotina',     color:'#1B82B0' },
+  { key:'audVendas',     label:'Auditoria de Vendas',     color:'#22c55e' },
+  { key:'audPerdidos',   label:'Auditoria de Perdidos',   color:'#ef4444' },
+  { key:'audEstorno',    label:'Auditoria de Estorno',    color:'#f59e0b' },
+  { key:'audDocumentos', label:'Auditoria de Documentos', color:'#014EDC' }
+];
+
+const audContainer = document.getElementById('auditoriasContainer');
+AUDITORIAS.forEach(a => {
+  const wrap = document.createElement('div');
+  wrap.className = 'exp-wrap track-auditoria';
+  wrap.id = 'wrap_' + a.key;
+  wrap.innerHTML = `
+    <label class="exp-header" for="chk_${a.key}">
+      <input class="exp-checkbox" type="checkbox" id="chk_${a.key}" name="${a.key}_ativo" value="Sim">
+      <div class="exp-check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div>
+      <div class="exp-dot" style="background:${a.color}; box-shadow: 0 0 8px ${a.color}80"></div>
+      <span class="exp-name">${a.label}</span>
+      <span class="exp-hint" id="hint_${a.key}">Marque para preencher</span>
+    </label>
+    <div class="exp-fields col-2" id="fields_${a.key}">
+      <div class="field mono"><label>Meta Dia</label><input type="number" name="${a.key}_meta" placeholder="Ex: 5" min="0"></div>
+      <div class="field mono"><label>Feitas Dia</label><input type="number" name="${a.key}_feitas" placeholder="Ex: 5" min="0"></div>
+    </div>
+  `;
+  audContainer.appendChild(wrap);
+  
+  const chk = document.getElementById('chk_' + a.key);
+  const fields = document.getElementById('fields_' + a.key);
+  const hint = document.getElementById('hint_' + a.key);
+  chk.addEventListener('change', () => {
+    fields.classList.toggle('open', chk.checked);
+    wrap.classList.toggle('active', chk.checked);
+    hint.textContent = chk.checked ? 'Preenchendo...' : 'Marque para preencher';
+    calcProgress();
+  });
+});
+
+const PLANOS = [
+  { key:'treinRelampago', label:'Treinamento Relâmpago', color:'#0065FF' },
+  { key:'planoMonitoria', label:'Monitoria',             color:'#1B82B0' },
+  { key:'planoFeedback',  label:'Feedback',              color:'#FCD02B' },
+  { key:'planoAuditoria', label:'Auditoria',             color:'#115978' },
+  { key:'planoAnalise',   label:'Análise',               color:'#014EDC' },
+  { key:'planoOutro',     label:'Outro',                 color:'#8c9bba' },
+];
+
+const planoContainer = document.getElementById('planosContainer');
+PLANOS.forEach(p => {
+  const wrap = document.createElement('div');
+  wrap.className = 'exp-wrap track-plano';
+  wrap.id = 'wrap_' + p.key;
+  wrap.innerHTML = `
+    <label class="exp-header" for="chk_${p.key}">
+      <input class="exp-checkbox" type="checkbox" id="chk_${p.key}" name="${p.key}_ativo" value="Sim">
+      <div class="exp-check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div>
+      <div class="exp-dot" style="background:${p.color}; box-shadow: 0 0 8px ${p.color}80"></div>
+      <span class="exp-name">${p.label}</span>
+      <span class="exp-hint" id="hint_${p.key}">Marque para preencher</span>
+    </label>
+    <div class="exp-fields col-3" id="fields_${p.key}">
+      <div class="field"><label>Detalhe da Ação</label><textarea name="${p.key}_detalhe" placeholder="Escreva o que será feito..." rows="1"></textarea></div>
+      <div class="field"><label>Resultado esperado</label><input type="text" name="${p.key}_resultado" placeholder="Ex: +15% conversão"></div>
+      <div class="field"><label>Prazo</label><input type="date" name="${p.key}_prazo"></div>
+    </div>
+  `;
+  planoContainer.appendChild(wrap);
+  
+  const chk = document.getElementById('chk_' + p.key);
+  const fields = document.getElementById('fields_' + p.key);
+  const hint = document.getElementById('hint_' + p.key);
+  chk.addEventListener('change', () => {
+    fields.classList.toggle('open', chk.checked);
+    wrap.classList.toggle('active', chk.checked);
+    hint.textContent = chk.checked ? 'Preenchendo...' : 'Marque para preencher';
+    calcProgress();
+  });
+});
+
+
+function calcProgress() {
+  const singles = document.querySelectorAll('.track-single');
+  let totalReq = singles.length;
+  let filled = 0;
+
+  singles.forEach(el => {
+    if (el.value.trim() !== '') filled++;
+  });
+
+  const expansives = document.querySelectorAll('.exp-wrap.active');
+  expansives.forEach(wrap => {
+    const inputs = wrap.querySelectorAll('input[type="number"], input[type="text"], input[type="date"], textarea');
+    totalReq += inputs.length;
+    inputs.forEach(el => { if (el.value.trim() !== '') filled++; });
+  });
+
+  const pct = totalReq === 0 ? 0 : Math.round((filled / totalReq) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+document.getElementById('dailyForm').addEventListener('input', calcProgress);
+document.getElementById('dailyForm').addEventListener('change', calcProgress);
+
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('data').value = today;
+calcProgress();
+
+document.getElementById('chkOutroGerente').addEventListener('change', function(e) {
+  const inputEmail = document.getElementById('inputEmailGerente');
+  if (e.target.checked) {
+    inputEmail.style.display = 'block'; inputEmail.required = true; inputEmail.focus();
+  } else {
+    inputEmail.style.display = 'none'; inputEmail.required = false; inputEmail.value = '';
+  }
+});
+
+
+function coletarFormulario() {
+  const fd = new FormData(document.getElementById('dailyForm'));
+  const d = Object.fromEntries(fd.entries());
+
+  ['diagQualScript','diagQualVendas','diagQualRegistros','diagQuantVolume','diagQuantTempo','diagQuantGargalos'].forEach(k => {
+    if (!d[k]) d[k] = 'Nao';
+  });
+
+  AUDITORIAS.forEach(a => {
+    if (!d[a.key + '_ativo']) { d[a.key + '_ativo'] = 'Nao'; d[a.key + '_meta'] = ''; d[a.key + '_feitas'] = ''; }
+  });
+  
+  PLANOS.forEach(p => {
+    if (!d[p.key + '_ativo']) { 
+      d[p.key + '_ativo'] = 'Nao'; 
+      d[p.key + '_detalhe'] = ''; 
+      d[p.key + '_resultado'] = ''; 
+      d[p.key + '_prazo'] = ''; 
+    }
+  });
+
+  return d;
+}
+
+function buildEmailHTML(d) {
+  const farolColor = { verde:'#22c55e', amarelo:'#f59e0b', vermelho:'#ef4444' };
+  const farolLabel = { verde:'Verde - Provável', amarelo:'Amarelo - Possível', vermelho:'Vermelho - Impossível' };
+  const fc = farolColor[d.farol] || '#6b7280';
+  const fl = farolLabel[d.farol] || 'Não informado';
+
+  const diagItems = [
+    ['Aderência ao Script/Processo', d.diagQualScript],
+    ['Técnica de Vendas/Argumentação', d.diagQualVendas],
+    ['Qualidade dos Registros (CRM)', d.diagQualRegistros],
+    ['Volume de Amostras Analisadas', d.diagQuantVolume],
+    ['Tempo de Análise por Ligação', d.diagQuantTempo],
+    ['Gargalos de Fila/Sistema', d.diagQuantGargalos]
+  ].map(([label, val]) => {
+    const isSim = val === 'Sim';
+    return `<tr>
+      <td width="20" style="padding:10px 0; border-bottom:1px solid #1e2e50;"><div style="width:14px;height:14px;border-radius:4px;background:${isSim?'#0065FF':'#115978'};"></div></td>
+      <td style="padding:10px 0; border-bottom:1px solid #1e2e50; font-size:14px; color:${isSim?'#ffffff':'#8c9bba'}">${label}</td>
+      <td align="right" style="padding:10px 0; border-bottom:1px solid #1e2e50; font-size:13px; font-weight:700; color:${isSim?'#0065FF':'#8c9bba'}">${val}</td>
+    </tr>`;
+  }).join('');
+
+  const audAtivas = AUDITORIAS.filter(a => d[a.key+'_ativo'] === 'Sim');
+  const audRows = audAtivas.map(a => `
+    <tr>
+      <td style="padding:12px; border-bottom:1px solid #1e2e50; font-weight:600; color:#1B82B0">${a.label}</td>
+      <td align="center" style="padding:12px; border-bottom:1px solid #1e2e50; color:#e2e8f0; font-family:monospace">${d[a.key+'_meta']||'--'}</td>
+      <td align="center" style="padding:12px; border-bottom:1px solid #1e2e50; color:#e2e8f0; font-family:monospace">${d[a.key+'_feitas']||'--'}</td>
+    </tr>`).join('');
+
+  const planosAtivos = PLANOS.filter(p => d[p.key+'_ativo'] === 'Sim');
+  const planosRows = planosAtivos.map(p => `
+    <tr>
+      <td style="padding:12px; border-bottom:1px solid #1e2e50; font-weight:600; color:#FCD02B">${p.label}</td>
+      <td style="padding:12px; border-bottom:1px solid #1e2e50; color:#e2e8f0">${d[p.key+'_detalhe']||'--'}</td>
+      <td style="padding:12px; border-bottom:1px solid #1e2e50; color:#e2e8f0">${d[p.key+'_resultado']||'--'}</td>
+      <td style="padding:12px; border-bottom:1px solid #1e2e50; color:#e2e8f0; white-space:nowrap">${d[p.key+'_prazo']||'--'}</td>
+    </tr>`).join('');
+
+  const card = (num, title, body) => `
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b1224; border:1px solid #1e2e50; border-radius:16px; margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 24px; background:#142141; border-bottom:1px solid #1e2e50; border-radius:16px 16px 0 0;">
+          <table width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td width="36"><span style="font-size:12px;font-weight:700;background:#FCD02B;color:#142141;border-radius:6px;padding:3px 10px">${num}</span></td>
+            <td><span style="font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ffffff">${title}</span></td>
+          </tr></table>
+        </td>
+      </tr>
+      <tr><td style="padding:24px;">${body}</td></tr>
+    </table>`;
+
+  const kvTable = pairs => {
+    let rows = '';
+    for(let i=0; i<pairs.length; i+=2) {
+      const [l1, v1] = pairs[i];
+      const [l2, v2] = pairs[i+1] || ['',''];
+      rows += `<tr>
+        <td width="48%" style="padding:14px; background:#142141; border:1px solid #1e2e50; border-radius:10px;">
+          <div style="font-size:11px;color:#8c9bba;text-transform:uppercase;margin-bottom:6px;font-weight:600">${l1}</div>
+          <div style="font-size:16px;font-weight:700;color:#ffffff;">${v1||'--'}</div>
+        </td>
+        <td width="4%"></td>
+        ${l2 ? `<td width="48%" style="padding:14px; background:#142141; border:1px solid #1e2e50; border-radius:10px;">
+          <div style="font-size:11px;color:#8c9bba;text-transform:uppercase;margin-bottom:6px;font-weight:600">${l2}</div>
+          <div style="font-size:16px;font-weight:700;color:#ffffff;">${v2||'--'}</div>
+        </td>` : `<td></td>`}
+      </tr>
+      <tr><td height="14"></td></tr>`;
+    }
+    return `<table width="100%" cellpadding="0" cellspacing="0" border="0">${rows}</table>`;
+  };
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="font-family:'Inter', Arial, sans-serif;background:#0b1224;color:#ffffff;margin:0;padding:0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0b1224;"><tr><td align="center" style="padding:40px 15px;">
+  <table width="100%" style="max-width:700px;" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="padding-bottom:30px; border-bottom:1px solid #1e2e50; text-align:center;">
+      <img src="https://github.com/user-attachments/assets/41e98109-418f-40d4-9c27-75a357726e0b" alt="FINX" height="40" style="margin-bottom: 20px;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#FCD02B;margin-bottom:8px">Daily de Qualidade</div>
+      <div style="font-size:24px;font-weight:800;color:#ffffff">Framework do Monitor</div>
+      <div style="font-size:14px;color:#8c9bba;margin-top:8px">${d.monitor} &nbsp;·&nbsp; ${d.equipe} &nbsp;·&nbsp; ${d.data}</div>
+    </td></tr>
+    <tr><td height="30"></td></tr>
+    <tr><td>
+      ${card('01','Indicadores do Dia', kvTable([
+        ['Meta Monitoria Dia', d.metaMonitoriaDia], ['Monitorias Feitas Dia', d.feitasMonitoriaDia]
+      ]) + (audRows ? `<div style="margin-top:16px;font-size:12px;font-weight:700;color:#8c9bba;text-transform:uppercase;margin-bottom:8px">Auditorias Realizadas</div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; background:#142141; border-radius:10px; overflow:hidden;">
+        <thead style="background:#1e2e50"><tr>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;color:#8c9bba;">TIPO</th>
+          <th style="text-align:center;padding:10px 12px;font-size:11px;color:#8c9bba;">META DIA</th>
+          <th style="text-align:center;padding:10px 12px;font-size:11px;color:#8c9bba;">FEITAS DIA</th>
+        </tr></thead><tbody>${audRows}</tbody>
+      </table>` : ''))}
+      
+      ${card('02','Diagnóstico', `<table width="100%" cellpadding="0" cellspacing="0">${diagItems}</table>`)}
+      
+      ${planosRows ? card('03','Plano de Ação', `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; background:#142141; border-radius:10px; overflow:hidden;">
+        <thead style="background:#1e2e50"><tr>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;color:#8c9bba;">AÇÃO</th>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;color:#8c9bba;">DETALHE</th>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;color:#8c9bba;">RESULTADO</th>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;color:#8c9bba;">PRAZO</th>
+        </tr></thead><tbody>${planosRows}</tbody>
+      </table>`) : ''}
+      
+      ${card('04','Farol de Confiança', `<div style="text-align:center">
+        <div style="display:inline-block;padding:14px 28px;border-radius:10px;font-size:16px;font-weight:800;border:2px solid ${fc};color:${fc};background:${fc}15">${fl}</div>
+        ${d.farolObs ? `<div style="margin-top:20px;font-size:14px;color:#8c9bba;font-style:italic">"${d.farolObs}"</div>` : ''}
+      </div>`)}
+    </td></tr>
+    <tr><td align="center" style="font-size:12px;color:#4a5b7c;padding:30px 0;">
+      Framework Monitor FINX &nbsp;·&nbsp; ${new Date().toLocaleString('pt-BR')}
+    </td></tr>
+  </table>
+</td></tr></table></body></html>`;
+}
+
+document.getElementById('dailyForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Enviando...`;
+
+  const d = coletarFormulario();
+  const emailHTML = buildEmailHTML(d);
+
+  const sheetRow = [
+    d.data, d.monitor, d.equipe,
+    d.metaMonitoriaDia, d.feitasMonitoriaDia,
+    ...AUDITORIAS.flatMap(a => [d[a.key+'_meta'], d[a.key+'_feitas']]),
+    d.diagQualScript, d.diagQualVendas, d.diagQualRegistros,
+    d.diagQuantVolume, d.diagQuantTempo, d.diagQuantGargalos,
+    ...PLANOS.flatMap(p => [d[p.key+'_detalhe'], d[p.key+'_resultado'], d[p.key+'_prazo']]),
+    d.farol, d.farolObs,
+  ];
+
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxWvJGgmbHWw0HZnHOIAFRF1C82O8QhRFRVszoC0pUWRVMQEs_74gmWlBSFGRvCIg3RrA/exec';
+
+  try {
+    await fetch(BACKEND_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        sheetRow,
+        emailHTML,
+        emailSupervisor: d.emailMonitor,
+        emailGerente:    d.emailGerente,
+        supervisor:      d.monitor, 
+        data:            d.data,
+      })
+    });
+    await new Promise(r => setTimeout(r, 1500));
+    showToast('Daily de Qualidade enviada com sucesso!', false);
+  } catch(err) {
+    console.error(err);
+    showToast('Erro ao enviar. Tente novamente.', true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Enviar Daily`;
+  }
+});
+
+function showToast(msg, isWarn) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background  = isWarn ? 'rgba(245,158,11,.2)' : 'rgba(34, 197, 94, 0.2)';
+  t.style.borderColor = isWarn ? '#f59e0b' : '#22c55e';
+  t.style.color       = isWarn ? '#fcd34d' : '#86efac';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function resetForm() {
+  if (confirm('Limpar todos os campos?')) {
+    document.getElementById('dailyForm').reset();
+    document.getElementById('data').value = today;
+    
+    document.getElementById('displayMonitor').textContent = 'Selecione...';
+    document.getElementById('displayEquipe').textContent = 'Selecione...';
+    document.querySelectorAll('#selectEquipe .select-items div').forEach(d => d.classList.remove('multi-selected'));
+    
+    const inputEmail = document.getElementById('inputEmailGerente');
+    inputEmail.style.display = 'none'; inputEmail.required = false;
+
+    document.querySelectorAll('textarea').forEach(ta => ta.style.height = 'auto');
+
+    AUDITORIAS.forEach(a => {
+      document.getElementById('fields_' + a.key).classList.remove('open');
+      document.getElementById('wrap_' + a.key).classList.remove('active');
+      document.getElementById('hint_' + a.key).textContent = 'Marque para preencher';
+    });
+    
+    PLANOS.forEach(p => {
+      document.getElementById('fields_' + p.key).classList.remove('open');
+      document.getElementById('wrap_' + p.key).classList.remove('active');
+      document.getElementById('hint_' + p.key).textContent = 'Marque para preencher';
+    });
+    calcProgress();
+  }
+}
+
+const s = document.createElement('style');
+s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1.2s linear infinite}';
+document.head.appendChild(s);
+</script>
+</body>
+</html>
