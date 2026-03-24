@@ -286,14 +286,15 @@
             <label class="check-item"><input type="checkbox" name="diagQualScript" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Aderência ao Script/Processo</span></label>
             <label class="check-item"><input type="checkbox" name="diagQualVendas" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Técnica de Vendas/Argumentação</span></label>
             <label class="check-item"><input type="checkbox" name="diagQualRegistros" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Qualidade dos Registros (CRM)</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQualCadencia" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Processo de Cadência de Ligação</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQualRotina" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Rotina de Trabalho</span></label>
           </div>
         </div>
         <div class="subgroup" style="margin-top:16px">
           <div class="subgroup-title">Quantitativo — Esforço e Eficiência da Qualidade</div>
           <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="diagQuantVolume" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Volume de Amostras Analisadas</span></label>
-            <label class="check-item"><input type="checkbox" name="diagQuantTempo" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Tempo de Análise por Ligação</span></label>
-            <label class="check-item"><input type="checkbox" name="diagQuantGargalos" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Gargalos de Fila/Sistema</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQuantEsforco" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Eficiência - Esforço (Contatos)</span></label>
+            <label class="check-item"><input type="checkbox" name="diagQuantMassa" value="Sim"><div class="check-box"><svg width="12" height="9" fill="none" stroke="#fff" viewBox="0 0 11 9"><polyline points="1 4.5 4 7.5 10 1"/></svg></div><span class="check-label">Massa Crítica - Negócios (Leads)</span></label>
           </div>
         </div>
       </div>
@@ -543,7 +544,8 @@ function coletarFormulario() {
   const fd = new FormData(document.getElementById('dailyForm'));
   const d = Object.fromEntries(fd.entries());
 
-  ['diagQualScript','diagQualVendas','diagQualRegistros','diagQuantVolume','diagQuantTempo','diagQuantGargalos'].forEach(k => {
+  ['diagQualScript','diagQualVendas','diagQualRegistros','diagQualCadencia','diagQualRotina',
+   'diagQuantEsforco','diagQuantMassa'].forEach(k => {
     if (!d[k]) d[k] = 'Nao';
   });
 
@@ -573,9 +575,10 @@ function buildEmailHTML(d) {
     ['Aderência ao Script/Processo', d.diagQualScript],
     ['Técnica de Vendas/Argumentação', d.diagQualVendas],
     ['Qualidade dos Registros (CRM)', d.diagQualRegistros],
-    ['Volume de Amostras Analisadas', d.diagQuantVolume],
-    ['Tempo de Análise por Ligação', d.diagQuantTempo],
-    ['Gargalos de Fila/Sistema', d.diagQuantGargalos]
+    ['Processo de Cadência de Ligação', d.diagQualCadencia],
+    ['Rotina de Trabalho', d.diagQualRotina],
+    ['Eficiência - Esforço (Contatos)', d.diagQuantEsforco],
+    ['Massa Crítica - Negócios (Leads)', d.diagQuantMassa]
   ].map(([label, val]) => {
     const isSim = val === 'Sim';
     return `<tr>
@@ -695,13 +698,13 @@ document.getElementById('dailyForm').addEventListener('submit', async function(e
     d.data, d.monitor, d.equipe,
     d.metaMonitoriaDia, d.feitasMonitoriaDia,
     ...AUDITORIAS.flatMap(a => [d[a.key+'_meta'], d[a.key+'_feitas']]),
-    d.diagQualScript, d.diagQualVendas, d.diagQualRegistros,
-    d.diagQuantVolume, d.diagQuantTempo, d.diagQuantGargalos,
+    d.diagQualScript, d.diagQualVendas, d.diagQualRegistros, d.diagQualCadencia, d.diagQualRotina,
+    d.diagQuantEsforco, d.diagQuantMassa,
     ...PLANOS.flatMap(p => [d[p.key+'_detalhe'], d[p.key+'_resultado'], d[p.key+'_prazo']]),
     d.farol, d.farolObs,
   ];
 
-  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxgGZxKQKzEcJ9l9XRewsnzgJjTdM2gFbnKdDsZEUywsE_-r5tcaRUXjBtaXoxKnw-feA/exec';
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyxBXI5EefipYXCQ-fZjuzx6hpd1JnfXrqNbMcaOHIDI0RnqnEDlQAZFqfp4yErmq1vuQ/exec';
 
   try {
     await fetch(BACKEND_URL, {
