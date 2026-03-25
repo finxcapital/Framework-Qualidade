@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily de Qualidade — FINX Monitor</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --finx-yellow:     #FCD02B;
@@ -45,17 +47,18 @@
   }
 
   body::before, body::after {
-    content: ''; position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; opacity: 0.6;
+    content: ''; position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none; opacity: 0.5;
+    will-change: transform;
   }
-  body::before { top: -10%; left: -10%; width: 500px; height: 500px; background: rgba(0, 101, 255, 0.3); }
-  body::after { bottom: -10%; right: -10%; width: 600px; height: 600px; background: rgba(27, 130, 176, 0.2); }
+  body::before { top: -10%; left: -10%; width: 400px; height: 400px; background: rgba(0, 101, 255, 0.25); }
+  body::after { bottom: -10%; right: -10%; width: 500px; height: 500px; background: rgba(27, 130, 176, 0.18); }
 
   .shell { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 50px 20px 80px; }
 
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  .animate-in { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-  .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } 
-  .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-in { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .delay-1 { animation-delay: 0.08s; } .delay-2 { animation-delay: 0.16s; } 
+  .delay-3 { animation-delay: 0.24s; } .delay-4 { animation-delay: 0.32s; }
 
   .header { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid var(--border); }
   .header-logo { height: 45px; margin-bottom: 24px; object-fit: contain; }
@@ -70,11 +73,12 @@
   @media(max-width:650px){ .meta-row, .meta-row-2, .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
   .section { 
-    background: var(--surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 24px; overflow: hidden; 
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+    contain: layout style;
   }
-  .section:focus-within, .section:hover { border-color: var(--border-hi); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+  .section:focus-within, .section:hover { border-color: var(--border-hi); box-shadow: 0 6px 28px rgba(0, 0, 0, 0.2); }
   .section-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
   .section-num { font-size: 11px; font-weight: 700; color: var(--finx-dark); background: var(--accent-yellow); border-radius: 6px; padding: 3px 8px; flex-shrink: 0; }
   .section-title { font-size: 14px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: #fff; }
@@ -125,7 +129,7 @@
   .select-items div.multi-selected { background: rgba(0, 101, 255, 0.15); color: var(--finx-yellow); font-weight: 600; }
   .select-items div.multi-selected::after { content: '✔'; position: absolute; right: 14px; color: var(--finx-yellow); }
 
-  .subgroup { background: rgba(0,0,0,.15); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 6px; }
+  .subgroup { background: rgba(0,0,0,.15); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 6px; contain: layout style; }
   .subgroup-title { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
   .subgroup-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
@@ -189,12 +193,15 @@
   
   .toast { position: fixed; bottom: 32px; right: 32px; border-radius: 12px; padding: 16px 24px; font-size: 14px; font-weight: 600; opacity: 0; transform: translateY(16px); transition: all .4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; z-index: 999; max-width: 340px; border: 1px solid; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
   .toast.show { opacity: 1; transform: translateY(0); }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 1.2s linear infinite; }
 </style>
 </head>
 <body>
 <div class="shell">
   <div class="header animate-in">
-    <img src="https://github.com/user-attachments/assets/41e98109-418f-40d4-9c27-75a357726e0b" alt="FINX" class="header-logo">
+    <img src="https://github.com/user-attachments/assets/41e98109-418f-40d4-9c27-75a357726e0b" alt="FINX" class="header-logo" loading="eager" decoding="async">
     <div class="header-tag">Daily de Qualidade</div>
     <h1>Framework do Monitor</h1>
     <div class="header-sub">Duração: 10-15 min &nbsp;·&nbsp; Foco: Análise, rastreamento e viabilidade</div>
@@ -353,11 +360,13 @@ function setupCustomSelect(containerId, inputId, onSelectCallback) {
   const options = items.querySelectorAll('div');
   options.forEach(opt => {
     opt.addEventListener('click', function(e) {
+      e.stopPropagation();
       selected.innerHTML = this.innerHTML;
       hiddenInput.value = this.dataset.value;
-      hiddenInput.dispatchEvent(new Event('input'));
       if (onSelectCallback) onSelectCallback(this);
-      selected.click();
+      items.classList.remove('select-show');
+      selected.classList.remove('select-arrow-active');
+      hiddenInput.dispatchEvent(new Event('change'));
     });
   });
 }
@@ -417,8 +426,10 @@ document.addEventListener('input', function (event) {
   autoResize(event.target);
 }, false);
 function autoResize(textarea) {
-  textarea.style.height = 'auto';
-  textarea.style.height = textarea.scrollHeight + 'px';
+  requestAnimationFrame(() => {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
 }
 
 const AUDITORIAS = [
@@ -523,12 +534,99 @@ function calcProgress() {
   document.getElementById('progressPct').textContent = pct + '%';
 }
 
-document.getElementById('dailyForm').addEventListener('input', calcProgress);
-document.getElementById('dailyForm').addEventListener('change', calcProgress);
+const DRAFT_KEY = 'finx_monitor_draft';
+
+function saveDraft() {
+  const d = {};
+  document.getElementById('dailyForm').querySelectorAll('input, textarea').forEach(el => {
+    const key = el.id || el.name;
+    if (!key) return;
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      d[key] = el.checked;
+    } else {
+      d[key] = el.value;
+    }
+  });
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+}
+
+let _isLoadingDraft = false;
+
+function loadDraft() {
+  const saved = localStorage.getItem(DRAFT_KEY);
+  if (!saved) { calcProgress(); return; }
+  try {
+    const d = JSON.parse(saved);
+    _isLoadingDraft = true;
+
+    Object.keys(d).forEach(key => {
+      const el = document.getElementById(key) || document.getElementsByName(key)[0];
+      if (!el) return;
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = d[key];
+        el.dispatchEvent(new Event('change'));
+      } else {
+        el.value = d[key];
+        if (el.tagName.toLowerCase() === 'textarea') autoResize(el);
+      }
+    });
+
+    const monVal = document.getElementById('inputMonitor').value;
+    if (monVal) {
+      const opt = document.querySelector(`#selectMonitor .select-items div[data-value="${monVal}"]`);
+      if (opt) document.getElementById('displayMonitor').textContent = opt.textContent;
+    }
+
+    const eqVal = document.getElementById('inputEquipe').value;
+    if (eqVal) {
+      const vals = eqVal.split(', ');
+      const texts = [];
+      vals.forEach(v => {
+        const opt = document.querySelector(`#selectEquipe .select-items div[data-value="${v}"]`);
+        if (opt) { opt.classList.add('multi-selected'); texts.push(opt.textContent); }
+      });
+      document.getElementById('displayEquipe').textContent = texts.length ? texts.join(', ') : 'Selecione...';
+    }
+
+    const inputGerente = document.getElementById('inputEmailGerente');
+    if (document.getElementById('chkOutroGerente').checked) {
+      inputGerente.style.display = 'block';
+      inputGerente.required = true;
+    }
+
+  } catch(e) {
+    console.error('Erro ao ler rascunho', e);
+  } finally {
+    _isLoadingDraft = false;
+    calcProgress();
+  }
+}
+
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+}
+
+let timeoutDigitacao;
+document.getElementById('dailyForm').addEventListener('input', function(e) {
+  if (_isLoadingDraft) return;
+  clearTimeout(timeoutDigitacao);
+  timeoutDigitacao = setTimeout(() => {
+    saveDraft();
+    calcProgress();
+  }, 400);
+});
+
+document.getElementById('dailyForm').addEventListener('change', function(e) {
+  if (_isLoadingDraft) return;
+  if (e.target.tagName.toLowerCase() !== 'textarea' && e.target.type !== 'text' && e.target.type !== 'number') {
+    saveDraft();
+    calcProgress();
+  }
+});
 
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('data').value = today;
-calcProgress();
+loadDraft();
 
 document.getElementById('chkOutroGerente').addEventListener('change', function(e) {
   const inputEmail = document.getElementById('inputEmailGerente');
@@ -685,8 +783,20 @@ function buildEmailHTML(d) {
 </td></tr></table></body></html>`;
 }
 
+document.getElementById('dailyForm').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.tagName.toLowerCase() !== 'textarea') {
+    e.preventDefault();
+  }
+});
+
+let isSubmitting = false;
+
 document.getElementById('dailyForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+
+  if (isSubmitting) return;
+  isSubmitting = true;
+
   const btn = document.getElementById('btnSubmit');
   btn.disabled = true;
   btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Enviando...`;
@@ -704,7 +814,7 @@ document.getElementById('dailyForm').addEventListener('submit', async function(e
     d.farol, d.farolObs,
   ];
 
-  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyLkvpNBVM3LsSJ-Krxc0Po6lG7Jm3QaNGaaU9UMBFu1rhg54juR70GYQ3KZj4jvK2tMQ/exec';
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwcJxQwTLxwnOptPmhUgYiO_v5jdhi0G8rbYnv8CUIREGB9BEslAw7AWNkd9jM6ayRy/exec';
 
   try {
     await fetch(BACKEND_URL, {
@@ -722,11 +832,13 @@ document.getElementById('dailyForm').addEventListener('submit', async function(e
     });
     await new Promise(r => setTimeout(r, 1500));
     showToast('Daily de Qualidade enviada com sucesso!', false);
+    clearDraft();
   } catch(err) {
     console.error(err);
     showToast('Erro ao enviar. Tente novamente.', true);
   } finally {
     btn.disabled = false;
+    isSubmitting = false;
     btn.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Enviar Daily`;
   }
 });
@@ -747,6 +859,8 @@ function resetForm() {
     document.getElementById('data').value = today;
     
     document.getElementById('displayMonitor').textContent = 'Selecione...';
+    document.getElementById('inputMonitor').value = '';
+
     document.getElementById('displayEquipe').textContent = 'Selecione...';
     document.querySelectorAll('#selectEquipe .select-items div').forEach(d => d.classList.remove('multi-selected'));
     
@@ -766,13 +880,11 @@ function resetForm() {
       document.getElementById('wrap_' + p.key).classList.remove('active');
       document.getElementById('hint_' + p.key).textContent = 'Marque para preencher';
     });
+
+    clearDraft();
     calcProgress();
   }
 }
-
-const s = document.createElement('style');
-s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1.2s linear infinite}';
-document.head.appendChild(s);
 </script>
 </body>
 </html>
