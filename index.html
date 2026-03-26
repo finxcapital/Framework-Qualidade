@@ -422,14 +422,12 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
   <div class="loading-text" id="loadingText">Enviando Daily...</div>
   <div class="loading-sub" id="loadingSub">Aguarde, isso pode levar alguns segundos</div>
 </div>
 
-<!-- Modal: Senha para teste -->
 <div class="modal-backdrop" id="modalTeste">
   <div class="modal-box">
     <div class="modal-icon">&#x1F9EA;</div>
@@ -447,7 +445,6 @@
   </div>
 </div>
 
-<!-- Modal: Duplicidade -->
 <div class="modal-backdrop" id="modalDuplicado">
   <div class="modal-box">
     <div class="modal-icon">&#x26A0;&#xFE0F;</div>
@@ -461,6 +458,18 @@
 </div>
 
 <script>
+window.addEventListener('beforeunload', function (e) {
+  const formHasData = document.getElementById('data').value || 
+                      document.getElementById('inputMonitor').value || 
+                      document.getElementById('inputEquipe').value ||
+                      localStorage.getItem('finx_monitor_draft');
+                      
+  if (formHasData || isSubmitting) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
 function setupCustomSelect(containerId, inputId, onSelectCallback) {
   const container = document.getElementById(containerId);
   const selected = container.querySelector('.select-selected');
@@ -741,8 +750,6 @@ document.getElementById('dailyForm').addEventListener('change', function(e) {
   }
 });
 
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('data').value = today;
 loadDraft();
 
 document.getElementById('chkOutroGerente').addEventListener('change', function(e) {
@@ -1009,6 +1016,8 @@ async function enviarPayload(payload, isTeste) {
 
     if (!isTeste) clearDraft();
     showToast(isTeste ? '✅ Teste enviado!' : '✅ Daily de Qualidade enviada com sucesso!', false);
+    
+    resetForm(true);
 
   } catch(err) {
     console.error(err);
@@ -1023,6 +1032,16 @@ async function enviarPayload(payload, isTeste) {
 document.getElementById('dailyForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   if (isSubmitting) return;
+  
+  const valData = document.getElementById('data').value;
+  const valMonitor = document.getElementById('inputMonitor').value;
+  const valEquipe = document.getElementById('inputEquipe').value;
+
+  if (!valData || !valMonitor || !valEquipe) {
+    showToast('⚠️ Preencha os campos de identificação (Data, Monitor e Equipe) antes de enviar.', true);
+    return;
+  }
+
   isSubmitting = true;
 
   const payload = montarPayload(false);
@@ -1101,13 +1120,14 @@ document.getElementById('modalDuplicado').addEventListener('click', function(e) 
   if (e.target === this) { fecharModal('modalDuplicado'); isSubmitting = false; }
 });
 
-function resetForm() {
-  if (confirm('Limpar todos os campos?')) {
+function resetForm(force) {
+  if (force === true || confirm('Limpar todos os campos?')) {
     document.getElementById('dailyForm').reset();
-    document.getElementById('data').value = today;
+    document.getElementById('data').value = '';
     
     document.getElementById('displayMonitor').textContent = 'Selecione...';
     document.getElementById('inputMonitor').value = '';
+    document.getElementById('inputEmailMonitor').value = '';
 
     document.getElementById('displayEquipe').textContent = 'Selecione...';
     document.querySelectorAll('#selectEquipe .select-items div').forEach(d => d.classList.remove('multi-selected'));
