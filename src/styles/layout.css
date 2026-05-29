@@ -1,0 +1,90 @@
+#app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 40px 20px 100px;
+}
+
+.step-header {
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+.step-question {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  min-height: 40px; /* Para evitar pulos enquanto o typing effect ocorre */
+}
+
+.step-question-typing {
+  border-right: 2px solid var(--accent);
+  padding-right: 4px;
+  animation: blink-caret 0.75s step-end infinite;
+}
+
+.step-subtext {
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 12px;
+  font-weight: 400;
+}
+
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 300px;
+}
+
+/* Grid utilities */
+.grid-1 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .step-question { font-size: 26px; }
+  .wizard-container { padding: 30px 20px 80px; }
+}
+
+/* Controls fixed at bottom */
+.wizard-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 24px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.wizard-controls-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  pointer-events: auto;
+}
+
+.controls-left, .controls-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

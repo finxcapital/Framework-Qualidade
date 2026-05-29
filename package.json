@@ -1,0 +1,19 @@
+{
+  "name": "framework-qualidade",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "bugs": {
+    "url": "https://github.com/finxcapital/Framework-Qualidade/issues"
+  },
+  "homepage": "https://github.com/finxcapital/Framework-Qualidade#readme",
+  "devDependencies": {
+    "vite": "^8.0.14"
+  }
+}
