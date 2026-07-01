@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbx3FeiQuV8enCTQ17kBysKwoPEQ_-BnEPr71nWCGDrooC0kyXJs4wIbKcm09Oc7k9Mh6A/exec';
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxn093zHAIEtTq6eAV57ujN_X1r7BR-CmDUua3RG008R0HKmHrH4ohmE2Ufu4AhFGR77A/exec';
 
 export async function enviarDaily(payload) {
   try {
