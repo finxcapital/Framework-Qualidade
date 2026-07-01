@@ -7,7 +7,8 @@ export const MONITORES = [
 export const EQUIPES = [
   { value: 'Movida' },
   { value: 'Condicional' },
-  { value: 'Localiza' }
+  { value: 'Localiza' },
+  { value: 'SDR' }
 ];
 
 export const AUDITORIAS = [
