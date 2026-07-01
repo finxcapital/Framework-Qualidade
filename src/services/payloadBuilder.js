@@ -8,8 +8,10 @@ export function montarPayload(state, isTeste) {
     state.data, 
     state.monitor, 
     state.equipes.join(', '),
-    state.indicadores.metaMonitoriaDia, 
-    state.indicadores.feitasMonitoriaDia,
+    state.indicadores.metaMonitoriaCloserDia, 
+    state.indicadores.feitasMonitoriaCloserDia,
+    state.indicadores.metaMonitoriaSDRDia, 
+    state.indicadores.feitasMonitoriaSDRDia,
     ...AUDITORIAS.flatMap(a => [
       state.auditorias[a.key+'_meta'] || '', 
       state.auditorias[a.key+'_feitas'] || ''

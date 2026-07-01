@@ -19,7 +19,7 @@ const formState = {
   equipes: [],
   emailGerente: '',
   hasGerente: false,
-  indicadores: { metaMonitoriaDia: '', feitasMonitoriaDia: '' },
+  indicadores: { metaMonitoriaCloserDia: '', feitasMonitoriaCloserDia: '', metaMonitoriaSDRDia: '', feitasMonitoriaSDRDia: '' },
   auditorias: {},
   diagnostico: {},
   planos: {},
@@ -316,19 +316,32 @@ function renderStep2(container) {
   container.innerHTML = `
     <div class="grid-2" style="max-width: 600px; margin: 0 auto;">
       <div class="field mono">
-        <label>Meta Monitoria Dia</label>
-        <input type="number" id="metaMon" placeholder="Ex: 20" min="0" value="${formState.indicadores.metaMonitoriaDia}">
+        <label>Meta Monitoria Closer Dia</label>
+        <input type="number" id="metaMonCloser" placeholder="Ex: 20" min="0" value="${formState.indicadores.metaMonitoriaCloserDia}">
       </div>
       <div class="field mono">
-        <label>Monitorias Feitas Dia</label>
-        <input type="number" id="feitasMon" placeholder="Ex: 18" min="0" value="${formState.indicadores.feitasMonitoriaDia}">
+        <label>Monitorias Closer Feitas Dia</label>
+        <input type="number" id="feitasMonCloser" placeholder="Ex: 18" min="0" value="${formState.indicadores.feitasMonitoriaCloserDia}">
+      </div>
+      <div class="field mono">
+        <label>Meta Monitoria SDR Dia</label>
+        <input type="number" id="metaMonSDR" placeholder="Ex: 20" min="0" value="${formState.indicadores.metaMonitoriaSDRDia}">
+      </div>
+      <div class="field mono">
+        <label>Monitorias SDR Feitas Dia</label>
+        <input type="number" id="feitasMonSDR" placeholder="Ex: 18" min="0" value="${formState.indicadores.feitasMonitoriaSDRDia}">
       </div>
     </div>
   `;
 
-  ['metaMon', 'feitasMon'].forEach(id => {
+  [
+    { id: 'metaMonCloser', key: 'metaMonitoriaCloserDia' },
+    { id: 'feitasMonCloser', key: 'feitasMonitoriaCloserDia' },
+    { id: 'metaMonSDR', key: 'metaMonitoriaSDRDia' },
+    { id: 'feitasMonSDR', key: 'feitasMonitoriaSDRDia' },
+  ].forEach(({ id, key }) => {
     container.querySelector(`#${id}`).addEventListener('input', (e) => {
-      formState.indicadores[id === 'metaMon' ? 'metaMonitoriaDia' : 'feitasMonitoriaDia'] = e.target.value;
+      formState.indicadores[key] = e.target.value;
       checkValidation();
     });
   });

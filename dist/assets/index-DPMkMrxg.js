@@ -86,7 +86,7 @@
           <div style="font-size:16px;font-weight:700;color:#ffffff;">${o||`--`}</div>
         </td>`:`<td></td>`}
       </tr>
-      <tr><td height="14"></td></tr>`}return`<table width="100%" cellpadding="0" cellspacing="0" border="0">${t}</table>`})([[`Meta Monitoria Dia`,e.indicadores.metaMonitoriaDia],[`Monitorias Feitas Dia`,e.indicadores.feitasMonitoriaDia]])+(a?`<div style="margin-top:16px;font-size:12px;font-weight:700;color:#8c9bba;text-transform:uppercase;margin-bottom:8px">Auditorias Realizadas</div>
+      <tr><td height="14"></td></tr>`}return`<table width="100%" cellpadding="0" cellspacing="0" border="0">${t}</table>`})([[`Meta Monitoria Closer Dia`,e.indicadores.metaMonitoriaCloserDia],[`Monitorias Closer Feitas Dia`,e.indicadores.feitasMonitoriaCloserDia],[`Meta Monitoria SDR Dia`,e.indicadores.metaMonitoriaSDRDia],[`Monitorias SDR Feitas Dia`,e.indicadores.feitasMonitoriaSDRDia]])+(a?`<div style="margin-top:16px;font-size:12px;font-weight:700;color:#8c9bba;text-transform:uppercase;margin-bottom:8px">Auditorias Realizadas</div>
       <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; background:#1a1a1a; border-radius:10px; overflow:hidden;">
         <thead style="background:#333333"><tr>
           <th style="text-align:left;padding:10px 12px;font-size:11px;color:#8c9bba;">TIPO</th>
@@ -115,7 +115,7 @@
       Framework Monitor FINX &nbsp;·&nbsp; ${new Date().toLocaleString(`pt-BR`)}
     </td></tr>
   </table>
-</td></tr></table></body></html>`}function b(e,t){let n=y(e);return{sheetRow:[e.data,e.monitor,e.equipes.join(`, `),e.indicadores.metaMonitoriaDia,e.indicadores.feitasMonitoriaDia,...c.flatMap(t=>[e.auditorias[t.key+`_meta`]||``,e.auditorias[t.key+`_feitas`]||``]),...l.map(t=>e.diagnostico[t.key]||`Nao`),...u.map(t=>e.diagnostico[t.key]||`Nao`),...d.flatMap(t=>[e.planos[t.key+`_detalhe`]||``,e.planos[t.key+`_resultado`]||``,e.planos[t.key+`_prazo`]||``]),e.farol||``,e.farolObs||``],emailHTML:n,emailSupervisor:e.emailMonitor,emailGerente:e.emailGerente,supervisor:e.monitor,data:e.data,isTeste:t||!1}}var x=`https://script.google.com/macros/s/AKfycbx3FeiQuV8enCTQ17kBysKwoPEQ_-BnEPr71nWCGDrooC0kyXJs4wIbKcm09Oc7k9Mh6A/exec`;async function S(e){try{let t=null;try{let n=await(await fetch(x,{method:`POST`,headers:{"Content-Type":`text/plain`},body:JSON.stringify(e)})).text();try{t=JSON.parse(n)}catch{}}catch{await fetch(x,{method:`POST`,mode:`no-cors`,headers:{"Content-Type":`text/plain`},body:JSON.stringify(e)})}return await new Promise(e=>setTimeout(e,2200)),{sucesso:!0,duplicado:t?.codigo===`duplicado`}}catch(e){return console.error(`Erro no envio:`,e),{sucesso:!1,erro:e}}}var C=7,w=0,T=!1,E={data:new Date().toISOString().split(`T`)[0],monitor:``,emailMonitor:``,equipes:[],emailGerente:``,hasGerente:!1,indicadores:{metaMonitoriaDia:``,feitasMonitoriaDia:``},auditorias:{},diagnostico:{},planos:{},farol:``,farolObs:``},D=[`Quem é você?`,`Qual equipe está sendo analisada?`,`Quais foram os indicadores do dia?`,`Quais auditorias foram realizadas?`,`O que foi identificado no diagnóstico?`,`Quais ações serão tomadas?`,`Qual o farol de confiança?`],O=[`Identificação do monitor`,`Selecione a operação`,`Volume de monitorias`,`Marque as auditorias feitas`,`Aspectos qualitativos e quantitativos`,`Ações corretivas ou de melhoria`,`Viabilidade de bater a meta`];function k(){let e=n();e&&Object.assign(E,e),document.getElementById(`app`).innerHTML=`
+</td></tr></table></body></html>`}function b(e,t){let n=y(e);return{sheetRow:[e.data,e.monitor,e.equipes.join(`, `),e.indicadores.metaMonitoriaCloserDia,e.indicadores.feitasMonitoriaCloserDia,e.indicadores.metaMonitoriaSDRDia,e.indicadores.feitasMonitoriaSDRDia,...c.flatMap(t=>[e.auditorias[t.key+`_meta`]||``,e.auditorias[t.key+`_feitas`]||``]),...l.map(t=>e.diagnostico[t.key]||`Nao`),...u.map(t=>e.diagnostico[t.key]||`Nao`),...d.flatMap(t=>[e.planos[t.key+`_detalhe`]||``,e.planos[t.key+`_resultado`]||``,e.planos[t.key+`_prazo`]||``]),e.farol||``,e.farolObs||``],emailHTML:n,emailSupervisor:e.emailMonitor,emailGerente:e.emailGerente,supervisor:e.monitor,data:e.data,isTeste:t||!1}}var x=`https://script.google.com/macros/s/AKfycbxn093zHAIEtTq6eAV57ujN_X1r7BR-CmDUua3RG008R0HKmHrH4ohmE2Ufu4AhFGR77A/exec`;async function S(e){try{let t=null;try{let n=await(await fetch(x,{method:`POST`,headers:{"Content-Type":`text/plain`},body:JSON.stringify(e)})).text();try{t=JSON.parse(n)}catch{}}catch{await fetch(x,{method:`POST`,mode:`no-cors`,headers:{"Content-Type":`text/plain`},body:JSON.stringify(e)})}return await new Promise(e=>setTimeout(e,2200)),{sucesso:!0,duplicado:t?.codigo===`duplicado`}}catch(e){return console.error(`Erro no envio:`,e),{sucesso:!1,erro:e}}}var C=7,w=0,T=!1,E={data:new Date().toISOString().split(`T`)[0],monitor:``,emailMonitor:``,equipes:[],emailGerente:``,hasGerente:!1,indicadores:{metaMonitoriaCloserDia:``,feitasMonitoriaCloserDia:``,metaMonitoriaSDRDia:``,feitasMonitoriaSDRDia:``},auditorias:{},diagnostico:{},planos:{},farol:``,farolObs:``},D=[`Quem é você?`,`Qual equipe está sendo analisada?`,`Quais foram os indicadores do dia?`,`Quais auditorias foram realizadas?`,`O que foi identificado no diagnóstico?`,`Quais ações serão tomadas?`,`Qual o farol de confiança?`],O=[`Identificação do monitor`,`Selecione a operação`,`Volume de monitorias`,`Marque as auditorias feitas`,`Aspectos qualitativos e quantitativos`,`Ações corretivas ou de melhoria`,`Viabilidade de bater a meta`];function k(){let e=n();e&&Object.assign(E,e),document.getElementById(`app`).innerHTML=`
     <div class="wizard-container">
       <div class="progress-container">
         <div class="progress-track"><div class="progress-fill" id="progressBar" style="width: 0%;"></div></div>
@@ -167,15 +167,23 @@
   `;let t=e.querySelector(`#equipesList`);s.forEach(n=>{let r=E.equipes.includes(n.value),i=p({title:n.value,value:n.value,isSelected:r,onClick:t=>{E.equipes.includes(t)?E.equipes=E.equipes.filter(e=>e!==t):E.equipes.push(t),L(e),M()}});t.appendChild(i)}),e.querySelector(`#toggleGerente`).addEventListener(`click`,()=>{E.hasGerente=!E.hasGerente,E.hasGerente||(E.emailGerente=``),L(e),M()});let n=e.querySelector(`#inputGerente`);n&&n.addEventListener(`input`,e=>{E.emailGerente=e.target.value,M()})}function R(e){e.innerHTML=`
     <div class="grid-2" style="max-width: 600px; margin: 0 auto;">
       <div class="field mono">
-        <label>Meta Monitoria Dia</label>
-        <input type="number" id="metaMon" placeholder="Ex: 20" min="0" value="${E.indicadores.metaMonitoriaDia}">
+        <label>Meta Monitoria Closer Dia</label>
+        <input type="number" id="metaMonCloser" placeholder="Ex: 20" min="0" value="${E.indicadores.metaMonitoriaCloserDia}">
       </div>
       <div class="field mono">
-        <label>Monitorias Feitas Dia</label>
-        <input type="number" id="feitasMon" placeholder="Ex: 18" min="0" value="${E.indicadores.feitasMonitoriaDia}">
+        <label>Monitorias Closer Feitas Dia</label>
+        <input type="number" id="feitasMonCloser" placeholder="Ex: 18" min="0" value="${E.indicadores.feitasMonitoriaCloserDia}">
+      </div>
+      <div class="field mono">
+        <label>Meta Monitoria SDR Dia</label>
+        <input type="number" id="metaMonSDR" placeholder="Ex: 20" min="0" value="${E.indicadores.metaMonitoriaSDRDia}">
+      </div>
+      <div class="field mono">
+        <label>Monitorias SDR Feitas Dia</label>
+        <input type="number" id="feitasMonSDR" placeholder="Ex: 18" min="0" value="${E.indicadores.feitasMonitoriaSDRDia}">
       </div>
     </div>
-  `,[`metaMon`,`feitasMon`].forEach(t=>{e.querySelector(`#${t}`).addEventListener(`input`,e=>{E.indicadores[t===`metaMon`?`metaMonitoriaDia`:`feitasMonitoriaDia`]=e.target.value,M()})})}function z(e){let t=document.createElement(`div`);t.className=`grid-1`,t.style.maxWidth=`600px`,t.style.margin=`0 auto`,c.forEach(n=>{let r=E.auditorias[n.key+`_ativo`]===`Sim`,i=`
+  `,[{id:`metaMonCloser`,key:`metaMonitoriaCloserDia`},{id:`feitasMonCloser`,key:`feitasMonitoriaCloserDia`},{id:`metaMonSDR`,key:`metaMonitoriaSDRDia`},{id:`feitasMonSDR`,key:`feitasMonitoriaSDRDia`}].forEach(({id:t,key:n})=>{e.querySelector(`#${t}`).addEventListener(`input`,e=>{E.indicadores[n]=e.target.value,M()})})}function z(e){let t=document.createElement(`div`);t.className=`grid-1`,t.style.maxWidth=`600px`,t.style.margin=`0 auto`,c.forEach(n=>{let r=E.auditorias[n.key+`_ativo`]===`Sim`,i=`
       <div class="grid-2">
         <div class="field mono"><label>Meta Dia</label><input type="number" data-key="${n.key}_meta" value="${E.auditorias[n.key+`_meta`]||``}" placeholder="0" min="0"></div>
         <div class="field mono"><label>Feitas Dia</label><input type="number" data-key="${n.key}_feitas" value="${E.auditorias[n.key+`_feitas`]||``}" placeholder="0" min="0"></div>

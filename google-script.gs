@@ -5,7 +5,8 @@ const ASSUNTO_EMAIL = 'Daily de Qualidade — ';
 
 const CABECALHOS = [
   'Data', 'Monitor', 'Equipe',
-  'Meta Monitoria Dia', 'Feitas Monitoria Dia',
+  'Meta Monitoria Closer Dia', 'Monitorias Closer Feitas Dia',
+  'Meta Monitoria SDR Dia', 'Monitorias SDR Feitas Dia',
   'Auditoria Rotina (Meta)', 'Auditoria Rotina (Feitas)',
   'Auditoria Vendas (Meta)', 'Auditoria Vendas (Feitas)',
   'Auditoria Perdidos (Meta)', 'Auditoria Perdidos (Feitas)',

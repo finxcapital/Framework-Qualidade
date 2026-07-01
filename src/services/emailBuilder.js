@@ -90,7 +90,8 @@ export function buildEmailHTML(state) {
     <tr><td height="30"></td></tr>
     <tr><td>
       ${card('01','Indicadores do Dia', kvTable([
-        ['Meta Monitoria Dia', state.indicadores.metaMonitoriaDia], ['Monitorias Feitas Dia', state.indicadores.feitasMonitoriaDia]
+        ['Meta Monitoria Closer Dia', state.indicadores.metaMonitoriaCloserDia], ['Monitorias Closer Feitas Dia', state.indicadores.feitasMonitoriaCloserDia],
+        ['Meta Monitoria SDR Dia', state.indicadores.metaMonitoriaSDRDia], ['Monitorias SDR Feitas Dia', state.indicadores.feitasMonitoriaSDRDia],
       ]) + (audRows ? `<div style="margin-top:16px;font-size:12px;font-weight:700;color:#8c9bba;text-transform:uppercase;margin-bottom:8px">Auditorias Realizadas</div>
       <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; background:#1a1a1a; border-radius:10px; overflow:hidden;">
         <thead style="background:#333333"><tr>
