@@ -14,6 +14,7 @@ export const EQUIPES = [
 
 export const AUDITORIAS = [
   { key: 'audRotina', label: 'Auditoria de Rotina', color: '#ffffff' },
+  { key: 'audStatus', label: 'Auditoria de Status', color: '#aaaaaa' },
   { key: 'audVendas', label: 'Auditoria de Vendas', color: '#cccccc' },
   { key: 'audPerdidos', label: 'Auditoria de Perdidos', color: '#999999' },
   { key: 'audEstorno', label: 'Auditoria de Estorno', color: '#666666' },
