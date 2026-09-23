@@ -1,7 +1,9 @@
 export const MONITORES = [
   { value: 'Alexandre Silva', email: 'alexandre.silva@finxcapital.com.br' },
   { value: 'Lilian Martins', email: 'lilian.martins@finxcapital.com.br' },
-  { value: 'Pedro Castro', email: 'pedro.castro@finxcapital.com.br' }
+  { value: 'Pedro Castro', email: 'pedro.castro@finxcapital.com.br' },
+  { value: 'Anderson Domingos', email: 'anderson.domingos@finxcapital.com.br' },
+  { value: 'Guilherme Silva', email: 'guilherme.silva@finxcapital.com.br' }
 ];
 
 export const EQUIPES = [
